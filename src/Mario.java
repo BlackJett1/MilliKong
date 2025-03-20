@@ -1,55 +1,86 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.Rectangle;
-import java.util.List;
+import  java.awt.*;
+public class Mario {
+    private int x, y, width = 40, height = 40;
+    private int speed = 5;
+    private int jumpSpeed = 15;
+    private int yVelocity = 0;
+    private boolean isJumping = false;
+    private boolean isFalling = false;
+    private Image marioSprite;
+    private final int GROUND_LEVEL = 500; // Ground level position
+    private final int GRAVITY = 1; // Gravity speed
 
-    public class Mario extends Characters implements KeyListener {
-        private int dx, dy;
-        private boolean onGround = false;
 
-        public Mario(String imagePath, int x, int y) {
-            super(imagePath, x, y);
+    public Mario(int x, int y) {
+        this.x = x;
+        this.y = y;
+
+
+        // Load the Mario image from the file (adjust path as needed)
+        try {
+            marioSprite = new ImageIcon(getClass().getResource("/assets/mario.png")).getImage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            marioSprite = null;  // Fallback: set image to null if loading fails
         }
-
-        public void move() {
-            x += dx;
-            y += dy;
-
-            if (!onGround) {
-                dy += 1;
-            }
-        }
-
-        public void checkCollisions(List<Platform> platforms) {
-            for (Platform p : platforms) {
-                if (getBounds().intersects(p.getBounds())) {
-                    onGround = true;
-                    dy = 0;
-                    y = p.getBounds().y - getBounds().height;
-                }
-            }
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_LEFT) dx = -5;
-            if (key == KeyEvent.VK_RIGHT) dx = 5;
-            if (key == KeyEvent.VK_UP && onGround) {
-                dy = -15;
-                onGround = false;
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) dx = 0;
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {}
     }
 
+
+    // Update Mario's position and physics (apply gravity smoothly)
+    public void update() {
+        // Apply gravity if Mario is not jumping
+        if (!isJumping && y < GROUND_LEVEL) {
+            yVelocity += GRAVITY;
+            isFalling = true;
+        } else {
+            isFalling = false;
+            yVelocity = 0; // Stop falling once Mario hits the ground
+            y = GROUND_LEVEL;
+        }
+
+
+        if (isJumping) {
+            yVelocity = -jumpSpeed;  // Jumping speed
+            isJumping = false;
+        }
+
+
+        y += yVelocity;  // Apply vertical velocity to Mario's position
+    }
+
+
+    // Handle horizontal movement
+    public void moveLeft() {
+        x -= speed;
+    }
+
+
+    public void moveRight() {
+        x += speed;
+    }
+
+
+    // Jump only when Mario is on the ground
+    public void jump() {
+        if (!isFalling) {
+            isJumping = true;
+        }
+    }
+
+
+    public void draw(Graphics g) {
+        if (marioSprite != null) {
+            g.drawImage(marioSprite, x, y, width, height, null);
+        } else {
+            g.setColor(Color.RED);  // Fallback if image is not loaded
+            g.fillRect(x, y, width, height);
+        }
+    }
+
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+}
 
 

@@ -1,81 +1,111 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamePanel extends JPanel implements ActionListener {
+
+public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     private Mario mario;
-    private Characters donkeyKong, pauline;
     private List<Platform> platforms;
     private List<Barrel> barrels;
+    private Image donkeyKong, pauline;
+    private int score = 0, lives = 3, time = 300;
+
 
     public GamePanel() {
-        setBackground(Color.BLACK);
-        mario = new Mario("/mario.png", 150, 480);
-        donkeyKong = new Characters("/donkeykong.png", 100, 100);
-        pauline = new Characters("/pauline.png", 400, 50);
-        platforms = new ArrayList<>();
+        timer = new Timer(30, this);
+        mario = new Mario(100, 500);
         barrels = new ArrayList<>();
+        platforms = new ArrayList<>();
 
 
-        platforms.add(new Platform(100, 500, 600, 20));
-        platforms.add(new Platform(200, 400, 400, 20));
-        platforms.add(new Platform(100, 300, 600, 20));
-        platforms.add(new Platform(200, 200, 400, 20));
+        // Initialize platforms
+        platforms.add(new Platform(50, 400, 600, 20, false));  // Flat platform
+        platforms.add(new Platform(100, 300, 600, 20, true));   // Slanted platform
 
-        addKeyListener(mario);
+
+        donkeyKong = new ImageIcon("donkeykong.png").getImage();
+        pauline = new ImageIcon("pauline.png").getImage();
+
+
+        addKeyListener(this);
         setFocusable(true);
-
-        timer = new Timer(16, this); // ~60 FPS
-    }
-
-    public void startGame() {
         timer.start();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        mario.move();
-        mario.checkCollisions(platforms);
-        for (Barrel barrel : barrels) {
-            barrel.move();
-        }
-        checkGameState();
-        repaint();
-    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        donkeyKong.draw(g);
-        pauline.draw(g);
-        mario.draw(g);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight()); // Background
+
+
+        // Draw Donkey Kong & Pauline
+        g.drawImage(donkeyKong, 100, 50, 80, 80, null);
+        g.drawImage(pauline, 600, 50, 60, 60, null);
+
+
+        // Draw Platforms
         for (Platform p : platforms) {
             p.draw(g);
         }
+
+
+        // Draw Barrels
         for (Barrel b : barrels) {
             b.draw(g);
         }
+
+
+        // Draw Mario
+        mario.draw(g);
+
+
+        // UI
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Score: " + score, 20, 30);
+        g.drawString("Lives: " + lives, 200, 30);
+        g.drawString("Time: " + time, 400, 30);
     }
 
-    public void checkGameState() {
-        if (mario.getBounds().intersects(pauline.getBounds())) {
-            System.out.println("You Win!");
-            timer.stop();
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Update Mario's and Barrel's positions
+        mario.update();
+        for (Barrel b : barrels) {
+            b.move(platforms); // Update barrel position
         }
-        for (Barrel barrel : barrels) {
-            if (mario.getBounds().intersects(barrel.getBounds())) {
-                System.out.println("Game Over!");
-                timer.stop();
-            }
+
+
+        repaint(); // Redraw the panel
+    }
+
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        // Handle Mario movement based on key press
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            mario.moveLeft();
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            mario.moveRight();
+        }
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            mario.jump();
         }
     }
 
-    public void spawnBarrel() {
-        barrels.add(new Barrel("/barrel.png", 120, 120));
-    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
+
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
 }
 

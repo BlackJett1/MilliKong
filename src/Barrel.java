@@ -19,7 +19,7 @@ public class Barrel {
     }
 
 
-    // Barrel Movement (apply gravity and slanted platform interaction)
+
     public void move(List<Platform> platforms) {
         x += speed;
 
@@ -28,9 +28,9 @@ public class Barrel {
         for (Platform p : platforms) {
             if (p.getBounds().intersects(getBounds())) {
                 if (p.isSlanted()) {
-                    y += 3;  // Simulate rolling down slanted platform
+                    y += 3;
                 } else {
-                    y = p.getY() - height;  // Stop on top of platform
+                    y = p.getY() - height;
                 }
                 onPlatform = true;
                 break;
@@ -39,8 +39,8 @@ public class Barrel {
 
 
         if (!onPlatform) {
-            if (y < 500) {  // Ensure barrel doesn't fall below the ground level
-                y += 5;  // Apply gravity
+            if (y < 500) {
+                y += 5;
             }
         }
     }
@@ -50,7 +50,7 @@ public class Barrel {
         if (barrelSprite != null) {
             g.drawImage(barrelSprite, x, y, width, height, null);
         } else {
-            g.setColor(new Color(139, 69, 19));  // Fallback: brown color
+            g.setColor(new Color(139, 69, 19));
             g.fillRect(x, y, width, height);
         }
     }

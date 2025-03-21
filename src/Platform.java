@@ -16,9 +16,9 @@ public class Platform {
     public void draw(Graphics g) {
         g.setColor(Color.BLUE);
         if (slanted) {
-            g.drawLine(x, y, x + width, y - height); // Draw slanted platform
+            g.drawLine(x, y, x + width, y - height);
         } else {
-            g.fillRect(x, y, width, height); // Draw flat platform
+            g.fillRect(x, y, width, height);
         }
     }
 

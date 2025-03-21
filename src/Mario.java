@@ -7,8 +7,8 @@ public class Mario {
     private boolean isJumping = false;
     private boolean isFalling = false;
     private Image marioSprite;
-    private final int GROUND_LEVEL = 500; // Ground level position
-    private final int GRAVITY = 1; // Gravity speed
+    private final int GROUND_LEVEL = 500;
+    private final int GRAVITY = 1;
 
 
     public Mario(int x, int y) {
@@ -16,40 +16,40 @@ public class Mario {
         this.y = y;
 
 
-        // Load the Mario image from the file (adjust path as needed)
+
         try {
             marioSprite = new ImageIcon(getClass().getResource("/assets/mario.png")).getImage();
         } catch (Exception e) {
             e.printStackTrace();
-            marioSprite = null;  // Fallback: set image to null if loading fails
+            marioSprite = null;
         }
     }
 
 
-    // Update Mario's position and physics (apply gravity smoothly)
+
     public void update() {
-        // Apply gravity if Mario is not jumping
+
         if (!isJumping && y < GROUND_LEVEL) {
             yVelocity += GRAVITY;
             isFalling = true;
         } else {
             isFalling = false;
-            yVelocity = 0; // Stop falling once Mario hits the ground
+            yVelocity = 0;
             y = GROUND_LEVEL;
         }
 
 
         if (isJumping) {
-            yVelocity = -jumpSpeed;  // Jumping speed
+            yVelocity = -jumpSpeed;
             isJumping = false;
         }
 
 
-        y += yVelocity;  // Apply vertical velocity to Mario's position
+        y += yVelocity;
     }
 
 
-    // Handle horizontal movement
+
     public void moveLeft() {
         x -= speed;
     }
@@ -60,7 +60,7 @@ public class Mario {
     }
 
 
-    // Jump only when Mario is on the ground
+
     public void jump() {
         if (!isFalling) {
             isJumping = true;
@@ -72,7 +72,7 @@ public class Mario {
         if (marioSprite != null) {
             g.drawImage(marioSprite, x, y, width, height, null);
         } else {
-            g.setColor(Color.RED);  // Fallback if image is not loaded
+            g.setColor(Color.RED);
             g.fillRect(x, y, width, height);
         }
     }

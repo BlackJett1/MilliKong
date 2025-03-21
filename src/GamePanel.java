@@ -21,7 +21,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         platforms = new ArrayList<>();
 
 
-        // Initialize platforms
+
         platforms.add(new Platform(50, 400, 600, 20, false));  // Flat platform
         platforms.add(new Platform(100, 300, 600, 20, true));   // Slanted platform
 
@@ -40,31 +40,31 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight()); // Background
+        g.fillRect(0, 0, getWidth(), getHeight());
 
 
-        // Draw Donkey Kong & Pauline
+
         g.drawImage(donkeyKong, 100, 50, 80, 80, null);
         g.drawImage(pauline, 600, 50, 60, 60, null);
 
 
-        // Draw Platforms
+
         for (Platform p : platforms) {
             p.draw(g);
         }
 
 
-        // Draw Barrels
+
         for (Barrel b : barrels) {
             b.draw(g);
         }
 
 
-        // Draw Mario
+
         mario.draw(g);
 
 
-        // UI
+
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + score, 20, 30);
@@ -75,20 +75,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Update Mario's and Barrel's positions
+
         mario.update();
         for (Barrel b : barrels) {
-            b.move(platforms); // Update barrel position
+            b.move(platforms);
         }
 
 
-        repaint(); // Redraw the panel
+        repaint();
     }
 
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // Handle Mario movement based on key press
+
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             mario.moveLeft();
         }
